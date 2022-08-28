@@ -1,5 +1,6 @@
 .env
 .gitignore
+Caddyfile
 docker-compose.yml
 *.md
 /caddy_config
