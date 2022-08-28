@@ -19,16 +19,16 @@ Steps
 
 Before deploying, all the environment variables declared in the `.env` file with values of `CHANGE_ME` must be replaced with valid values:
 
-| Environment Variable | Description                                                 |
-| -------------------- | ----------------------------------------------------------- |
-| CADDY_SUBDOMAIN      | The subdomain to use for reverse proxy site                 |
-| CADDY_DOMAIN         | The domain (must be under control in Digital Ocean DNS)     |
-| CADDY_PROXY_UPSTREAM | The upstream server for the reverse proxy                   |
-| CADDY_ADMIN          | The email address of the authentication admin user          |
-| DO_AUTH_TOKEN        | The Digital Ocean API Key                                   |
-| GOOGLE_CLIENT_ID     | The Google OAuth client ID                                  |
-| GOOGLE_CLIENT_SECRET | The Google OAuth client secret                              |
-| JWT_SHARED_KEY       | A random unique value for the authentication JWT shared key |
+| Environment Variable   | Description                                                 |
+| ---------------------- | ----------------------------------------------------------- |
+| `CADDY_SUBDOMAIN`      | The subdomain to use for reverse proxy site                 |
+| `CADDY_DOMAIN`         | The domain (must be under control in Digital Ocean DNS)     |
+| `CADDY_PROXY_UPSTREAM` | The upstream server for the reverse proxy                   |
+| `CADDY_ADMIN`          | The email address of the authentication admin user          |
+| `DO_AUTH_TOKEN`        | The Digital Ocean API Key                                   |
+| `GOOGLE_CLIENT_ID`     | The Google OAuth client ID                                  |
+| `GOOGLE_CLIENT_SECRET` | The Google OAuth client secret                              |
+| `JWT_SHARED_KEY`       | A random unique value for the authentication JWT shared key |
 
 Then:
 
