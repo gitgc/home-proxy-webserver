@@ -39,3 +39,27 @@ Then:
 This will deploy Caddy with valid SSL LetsEncrypt certificate and Google SSO/2FA access control for the site specified by `CADDY_PROXY_UPSTREAM` at `https://$CADDY_SUBDOMAIN.$CADDY_DOMAIN`. SSL is configured via the Digital Ocean public DNS management API using the provided API key. This project is able to provide valid SSL for both private and public IP ranges, allowing use for internal sites. Access is provided to any valid logged-in user from the specified Google organization.
 
 A healthcheck endpoint of `https://$CADDY_SUBDOMAIN.$CADDY_DOMAIN/caddy-health-check` is provided and used by the example `docker-compose.yml`.
+
+### Volumes
+The following volumes are declared in the example compose file:
+
+| Environment Variable   | Description                                               |
+| ---------------------- | --------------------------------------------------------- |
+| `Caddyfile`            | The [`Caddyfile`](https://caddyserver.com/docs/caddyfile) |
+| `/site`                | Optional for hosting static web resources                 |
+| `/caddy_data`          | Standard Caddy server volume location                     |
+| `/caddy_config`        | Standard Caddy server volume location                     |
+
+### Upstream Server
+The upstream server declared by `CADDY_PROXY_UPSTREAM` can be another container in a compose stack, in which case simply take advantage of docker-compose DNS and use the service name as the upstream hostname, e.g. `http://<compose-service-name-here>:<port>`.
+
+If the service you wish to proxy is located outside of Docker, use the appropriate IP or hostname for the upstream. If the upstream is the machine running Docker itself, note the use of the `extra_hosts` configuration in the compose file - the hostname `host.docker.internal` will forward to the Docker host machine.
+
+Finally, if the upstream server is using a self-signed SSL certificate, add the following configuration block to allow Caddy to trust it:
+
+    reverse_proxy {$CADDY_PROXY_UPSTREAM} {
+        transport http {
+            # This argument skips verification of the self-signed certificate
+            tls_insecure_skip_verify
+        }
+    }
