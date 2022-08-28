@@ -1,0 +1,31 @@
+services:
+  caddy:
+    build: .
+    container_name: caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - CADDY_SUBDOMAIN
+      - CADDY_DOMAIN
+      - CADDY_PROXY_UPSTREAM
+      - CADDY_HEALTH_CHECK_URI
+      - CADDY_ADMIN
+      - DO_AUTH_TOKEN
+      - GOOGLE_CLIENT_ID
+      - GOOGLE_CLIENT_SECRET
+      - JWT_SHARED_KEY
+    volumes:
+      - "./Caddyfile:/etc/caddy/Caddyfile:ro"
+      - "./caddy/site/:/var/www/html/"
+      - "./caddy/caddy_data/:/data/"
+      - "./caddy/caddy_config/:/config/"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: [ "CMD", "wget", "--spider", "${CADDY_HEALTH_CHECK_URI}" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s

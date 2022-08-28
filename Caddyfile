@@ -1,0 +1,69 @@
+{
+  order authenticate before respond
+  order authorize before reverse_proxy
+
+  acme_dns digitalocean {env.DO_AUTH_TOKEN}
+
+  security {
+    oauth identity provider google {
+      realm google
+      driver google
+      client_id {env.GOOGLE_CLIENT_ID}
+      client_secret {env.GOOGLE_CLIENT_SECRET}
+      scopes openid email profile
+    }
+
+    authentication portal myportal {
+      crypto default token lifetime 3600
+      crypto key sign-verify {env.JWT_SHARED_KEY}
+      enable identity provider google
+      cookie domain {env.CADDY_DOMAIN}
+
+      ui {
+        links {
+          "My Identity" "/whoami" icon "las la-user"
+        }
+      }
+
+      transform user {
+        match realm google
+        action add role authp/user
+        ui link "Link Name" https://{$CADDY_SUBDOMAIN}.{$CADDY_DOMAIN}/ icon "las la-star"
+      }
+
+      transform user {
+        match realm google
+        match email {env.CADDY_ADMIN}
+        action add role authp/admin
+      }
+    }
+
+    authorization policy mypolicy {
+      set auth url https://auth.{$CADDY_DOMAIN}/oauth2/google
+      crypto key verify {env.JWT_SHARED_KEY}
+      allow roles authp/admin authp/user
+      validate bearer header
+      inject headers with claims
+    }
+  }
+}
+
+auth.{$CADDY_DOMAIN} {
+  encode gzip
+  authenticate with myportal
+}
+
+{$CADDY_SUBDOMAIN}.{$CADDY_DOMAIN} {
+  encode gzip
+
+  @remote_host_filter {
+    not path /caddy-health-check
+  }
+
+  handle @remote_host_filter {
+    authorize with mypolicy
+  }
+
+  respond /caddy-health-check 200
+  reverse_proxy {$CADDY_PROXY_UPSTREAM}
+}
