@@ -18,9 +18,9 @@ services:
       - JWT_SHARED_KEY
     volumes:
       - "./Caddyfile:/etc/caddy/Caddyfile:ro"
-      - "./caddy/site/:/var/www/html/"
-      - "./caddy/caddy_data/:/data/"
-      - "./caddy/caddy_config/:/config/"
+      - "./site/:/var/www/html/"
+      - "./caddy_data/:/data/"
+      - "./caddy_config/:/config/"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     healthcheck:
