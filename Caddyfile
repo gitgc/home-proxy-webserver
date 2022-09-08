@@ -27,6 +27,7 @@
 
       transform user {
         match realm google
+        suffix match email @{$CADDY_DOMAIN}
         action add role authp/user
         ui link "Link Name" https://{$CADDY_SUBDOMAIN}.{$CADDY_DOMAIN}/ icon "las la-star"
       }
