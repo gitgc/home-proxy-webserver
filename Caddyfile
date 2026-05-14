@@ -2,7 +2,7 @@
   order authenticate before respond
   order authorize before reverse_proxy
 
-  acme_dns digitalocean {env.DO_AUTH_TOKEN}
+  acme_dns cloudflare {env.CF_AUTH_TOKEN}
 
   security {
     oauth identity provider google {
