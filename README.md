@@ -25,7 +25,7 @@ Before deploying, all the environment variables declared in the `.env` file with
 | `CADDY_DOMAIN`         | The domain (must be under control in Cloudflare DNS)        |
 | `CADDY_PROXY_UPSTREAM` | The upstream server for the reverse proxy                   |
 | `CADDY_ADMIN`          | The email address of the authentication admin user          |
-| `CF_AUTH_TOKEN`        | The Cloudflare API Key                                      |
+| `CF_AUTH_TOKEN`        | The Cloudflare API token (Zone:DNS:Edit permission)         |
 | `GOOGLE_CLIENT_ID`     | The Google OAuth client ID                                  |
 | `GOOGLE_CLIENT_SECRET` | The Google OAuth client secret                              |
 | `JWT_SHARED_KEY`       | A random unique value for the authentication JWT shared key |

@@ -1,7 +1,4 @@
 {
-  order authenticate before respond
-  order authorize before reverse_proxy
-
   acme_dns cloudflare {env.CF_AUTH_TOKEN}
 
   security {
@@ -29,7 +26,7 @@
         match realm google
         suffix match email @{$CADDY_DOMAIN}
         action add role authp/user
-        ui link "Link Name" https://{$CADDY_SUBDOMAIN}.{$CADDY_DOMAIN}/ icon "las la-star"
+        ui link "{$CADDY_SUBDOMAIN}" https://{$CADDY_SUBDOMAIN}.{$CADDY_DOMAIN}/ icon "las la-star"
       }
 
       transform user {
@@ -50,20 +47,20 @@
 }
 
 auth.{$CADDY_DOMAIN} {
-  encode gzip
+  log
+  encode zstd gzip
   authenticate with myportal
 }
 
 {$CADDY_SUBDOMAIN}.{$CADDY_DOMAIN} {
-  encode gzip
+  log
+  encode zstd gzip
 
-  @remote_host_filter {
+  @not_health_check {
     not path /caddy-health-check
   }
 
-  handle @remote_host_filter {
-    authorize with mypolicy
-  }
+  authorize @not_health_check with mypolicy
 
   respond /caddy-health-check 200
   reverse_proxy {$CADDY_PROXY_UPSTREAM}
